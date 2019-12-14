@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+<form>
+
+    <input type="file" name='file' id='music'><br />
+    <input type="file" name='file' id='picture1' accept="image/gif,image/png,image/jpg,image/jpeg"><br />
+    请输入tag： <input type="text" id='tag'>
+
+
+    <input type="button" value="提交" id='button1'>
+</form>
+
+<br /><br /><br />
+<form action="http://lizhuodong.xyz:8080/login/addSayingServlet" method="post" name='uploads'
+      enctype="multipart/form-data">
+
+    输入普适性的话:<input type="text" name='content' id='content'><br />
+    请输入tag： <input type="text" id='tag2'>
+    <input type="file" name="file" accept="image/gif,image/png,image/jpg,image/jpeg" id='picture2'><br />
+
+    <input type="button" value="提交" id='button2'>
+</form>
+
+<script type="text/javascript">
+    var amusic, apicture1, apicture2;
+    //const fd =new FormData();
+    //const fd2 =new FormData();
+    function initiate() {
+        // alert(9)
+
+        var music = document.getElementById('music');
+        music.addEventListener('change', processmusic, false)
+        var picture1 = document.getElementById('picture1');
+        picture1.addEventListener('change', processpicture1, false)
+        var picture2 = document.getElementById('picture2');
+        picture2.addEventListener('change', processpicture2, false)
+    }
+
+    //alert(0)
+    function processpicture1(e) {
+        // alert(1)
+        var apicture1 = e.target.files[0];
+        var reader = new FileReader();
+        reader.onload = showpicture1;
+        reader.readAsDataURL(apicture1)
+        //fd.append('file2',e.target.files[0])
+    }
+    function processpicture2(e) {
+        var apicture2 = e.target.files[0];
+        var reader = new FileReader();
+        reader.onload = showpicture2;
+        reader.readAsDataURL(apicture2)
+        //fd2.append('file',e.target.files[0])
+    }
+    function processmusic(e) {
+        //alert(3)
+        var amusic = e.target.files[0];
+        var reader = new FileReader();
+        reader.onload = showmusic;
+        reader.readAsDataURL(amusic)
+        //fd.append('file',e.target.files[0])
+    }
+    function showmusic(e) {
+        amusic = e.target.result;
+    }
+    function showpicture2(e) {
+        apicture2 = e.target.result;
+    }
+    function showpicture1(e) {
+
+        apicture1 = e.target.result;
+
+    }
+
+
+    document.getElementById('button1').onclick = function () {
+        //fd.append('tag',document.getElementById('tag').value);
+        //fd.append('keyword','学生在线精彩无限');
+        var url = "http://lizhuodong.xyz:8080/login/addMusicServlet"
+        data = {
+            file: amusic,
+            file2: apicture1,
+            tag: document.getElementById('tag').value,
+            keyword: '学生在线精彩无限',
+
+        }
+        var headers = new Headers();
+        headers.append('Content-Type', 'multipart/form data');
+        console.log(data)
+        // console.log(fd)
+        fetch(url, {
+            method: 'POST',
+            headers: headers,
+            credentials: 'include',
+            mode:'cors',
+            body: (data)
+        }).then(function (res) { return res.json(); }).then(function (date) {
+                console.log(date);
+
+            }
+        )
+    }
+    document.getElementById('button2').onclick = function () {
+
+        var url = "http://lizhuodong.xyz:8080/login/addSayingServlet"
+        var headers = new Headers(
+            {//'Access-Control-Allow-Origin': '*',
+                //'Origin':'',
+                'Content-Type':'multipart/form data',
+                //'Access-Control-Alloe-Credentials':true
+            }
+        );
+
+        data = {
+            content: document.getElementById('content').value,
+            tag: document.getElementById('tag2').value,
+            picture2: apicture2,
+            keyword: '学生在线精彩无限',
+
+        }
+        console.log(data)
+        fetch(url, {
+            credentials: 'include',
+            headers: headers,
+            method: 'POST',
+
+            body: (data)
+
+        }).then(function (res) { return res.json(); }).then(function (date) {
+                console.log(date);
+
+            }
+        )
+    }
+    window.addEventListener('load', initiate, false)
+</script>
+</body>
+
+</html>
